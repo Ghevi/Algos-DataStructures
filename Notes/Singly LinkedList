@@ -1,0 +1,66 @@
+ Complexity of counting the size of the list would be: θ(n) aka Theta of n because we have to count exactly n elements.
+   So we get to know the currentSize. But if we keep track of the currentSize,
+   then the complexity to know the size get reduced to O(1) aka constant time,
+   because we just need to add or subtract from the currentSize when we add or remove a node.
+
+   BOUNDARY CONDITIONS:
+
+   Empty data structure -> worries : adding last(nullPExc), removeFirst(nullPExc)
+   Single element in the data structure
+   Adding or removing from the beginning of the data structure
+   Adding or removing from the ending of the data structure
+   Working in the middle
+
+   ADDING FIRST
+   head is null when the linked list is empty. In order to add a node, we have to assign the memory address
+   of the A node to the head, meaning that the head variable will be a pointer to A node.
+   If we want to add a new node B AS THE FIRST NODE, so before A, we will do the same process. The head variable will
+   point to B node and now, nothing will point to A node anymore, so it will be a candidate for garbage collection.
+   BUT WAIT!! We don't want A to be garbage collected. So what we do instead is we let the variable head point to A
+   and make the variable next of node B point to A, before anything else, so we don't lose the reference to A.
+   Now we can finally assign to head the reference to B.
+
+   The complexity of adding first to a linked list, so, is just 1 because i don't need to traverse the list.
+   When adding first we don't need to worry of null pointer exception because we are just assigning null to the
+   A node next, which ofc doesn't cause any trouble.
+
+   ADDING LAST
+   Since we have assigned node to head, if we have a linked list of 3 nodes, we could write
+   head.next.next.next = node;
+   where node is the node we adding at the end of the list. But this isn't feasible if the list will contain a lots of nodes.
+
+   So instead we add a temporary pointer called tmp which will point to the head (node A for example).
+   Now we check if(tmp.next != null) then we will have tmp = tmp.next; tmp will point to node B.
+   We check again then we will make tmp point to node C. We check again and now tmp.next is indeed null.
+   So we can add a new node called D and we make tmp.next point to it and ALSO the C node.next will point to D.
+   Finally we increase the currentSize;
+   We do this in a while loop.
+
+   We have to worry when we have an empty list about the null pointer exception because we have temp.next which is null.
+   So we check if head == null right after creating the new node, we assign node to head, we increment the currentSize and
+   finally we return; out of the addLast method.
+   The complexity of adding last is O(n) because of the while loop, we are traversing the whole list.
+
+   To reduce this, we can use another pointer called tail that points to the last node of the list,
+   so the complexity becomes O(1). We add a global variable called tail that at first is null.
+   When we add a last node with this faster method, we have to make tail equal to the node if the head is equal to null.
+   If not then we make tail.next = node, tail = node and increment size.
+   We also needs to modify the addFirst method in order for the tail to point to the added node aswell as the head if the list is empty.
+
+   REMOVE FIRST
+   We have to make head pointing to B so the reference to A gets lost and therefor A gets garbage collected
+   So we do head = head.next because head.next points to B.
+   If we have an empty list, head points to null, therefor head.next will throw a null pointer exception. We also have nothing to return.
+   If there is a single element, both head and tail point to the same element, so if we set head = head.next we have to also set tail = head.next;
+   To check if we have a single node list, we compare if(head == tail) and then we update both of them if true, head = tail = null;
+
+   REMOVE LAST
+   There is no mechanism to go from C to B in a singly linked list. So we have to go from the start.
+   We need to create two temporal pointers, the first is current and point to head, the second is called previous and it's going to point to null at start.
+   Then we want to set previous to current and current to current.next as many times as the nodes in the list.
+
+   If we have an empty list, we return null;
+   If we have one node in the list, we can just call removeFirst();
+   To tell if we are at the end of the list we while current != tail or current.next == null. At the end of the list current == tail and current.next == tail
+   So we set previous = current and current = current.next;
+   Then we point previous.next = null; because is the new tail, tail = previous, we decrease current size and we return current.data;
