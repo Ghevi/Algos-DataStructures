@@ -84,6 +84,51 @@ public class SinglyLinkedList<E> implements ListIterator<E> {
 
         tail.next = node;
         tail = node;
+
+        currentSize++;
+    }
+
+    public E removeFirst(){
+
+        if(head == null){
+            return null;
+        }
+
+        E tmp = head.data;
+
+        if(head == tail){
+            head = tail = null;
+        } else {
+            head = head.next;
+        }
+
+        currentSize--;
+        return tmp;
+    }
+
+    public E removeLast(){
+        if(head == null){
+            return null;
+        }
+
+        if(head == tail){
+            return removeFirst();
+        }
+
+        Node<E> current = head; // Can also write Node<E> current = head, previous = null;
+        Node<E> previous = null;
+
+        while(current != tail){
+            // The order is crucial
+            previous = current;
+            current = current.next;
+        }
+
+        previous.next = null;
+        tail = previous;
+        currentSize--;
+
+        return current.data;
     }
 
     // Interface methods
@@ -141,13 +186,14 @@ public class SinglyLinkedList<E> implements ListIterator<E> {
    because we just need to add or subtract from the currentSize when we add or remove a node.
 
    BOUNDARY CONDITIONS:
-   Empty data structure -> worries : adding last(nullPExc)
+
+   Empty data structure -> worries : adding last(nullPExc), removeFirst(nullPExc)
    Single element in the data structure
    Adding or removing from the beginning of the data structure
    Adding or removing from the ending of the data structure
    Working in the middle
 
-   ADDING FIRST:
+   ADDING FIRST
    head is null when the linked list is empty. In order to add a node, we have to assign the memory address
    of the A node to the head, meaning that the head variable will be a pointer to A node.
    If we want to add a new node B AS THE FIRST NODE, so before A, we will do the same process. The head variable will
@@ -160,7 +206,7 @@ public class SinglyLinkedList<E> implements ListIterator<E> {
    When adding first we don't need to worry of null pointer exception because we are just assigning null to the
    A node next, which ofc doesn't cause any trouble.
 
-   ADDING LAST:
+   ADDING LAST
    Since we have assigned node to head, if we have a linked list of 3 nodes, we could write
    head.next.next.next = node;
    where node is the node we adding at the end of the list. But this isn't feasible if the list will contain a lots of nodes.
@@ -182,6 +228,25 @@ public class SinglyLinkedList<E> implements ListIterator<E> {
    When we add a last node with this faster method, we have to make tail equal to the node if the head is equal to null.
    If not then we make tail.next = node, tail = node and increment size.
    We also needs to modify the addFirst method in order for the tail to point to the added node aswell as the head if the list is empty.
+
+   REMOVE FIRST
+   We have to make head pointing to B so the reference to A gets lost and therefor A gets garbage collected
+   So we do head = head.next because head.next points to B.
+   If we have an empty list, head points to null, therefor head.next will throw a null pointer exception. We also have nothing to return.
+   If there is a single element, both head and tail point to the same element, so if we set head = head.next we have to also set tail = head.next;
+   To check if we have a single node list, we compare if(head == tail) and then we update both of them if true, head = tail = null;
+
+   REMOVE LAST
+   There is no mechanism to go from C to B in a singly linked list. So we have to go from the start.
+   We need to create two temporal pointers, the first is current and point to head, the second is called previous and it's going to point to null at start.
+   Then we want to set previous to current and current to current.next as many times as the nodes in the list.
+
+   If we have an empty list, we return null;
+   If we have one node in the list, we can just call removeFirst();
+   To tell if we are at the end of the list we while current != tail or current.next == null. At the end of the list current == tail and current.next == tail
+   So we set previous = current and current = current.next;
+   Then we point previous.next = null; because is the new tail, tail = previous, we decrease current size and we return current.data;
+
 */
 
 
