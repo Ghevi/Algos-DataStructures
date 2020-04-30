@@ -13,11 +13,11 @@ public class Tester {
             list.addFirstWithTail(i);
 
 
-        list.removeFirst();
-        list.removeLast();
+        int removedFirst = list.removeFirst();
+        int removedLast = list.removeLast();
 
         for(int x : list){
-
+            System.out.println(x);
         }
     }
 }
