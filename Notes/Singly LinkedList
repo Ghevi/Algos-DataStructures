@@ -11,6 +11,9 @@
    Adding or removing from the ending of the data structure
    Working in the middle
 
+   SUPER IMPORTANT::: while(tmp.next != null) -> stop at last node (peek Last)
+                      while(tmp != null) -> stop after the last node  (contains, find and remove)
+
    ADDING FIRST
    head is null when the linked list is empty. In order to add a node, we have to assign the memory address
    of the A node to the head, meaning that the head variable will be a pointer to A node.
@@ -64,3 +67,40 @@
    To tell if we are at the end of the list we while current != tail or current.next == null. At the end of the list current == tail and current.next == tail
    So we set previous = current and current = current.next;
    Then we point previous.next = null; because is the new tail, tail = previous, we decrease current size and we return current.data;
+
+   FIND AND REMOVE
+
+   In order to find a specific node we use the comparable interface if(((Comparable<E>)current.data).compareTo(obj) == 0). When we find the node to remove, we
+   take the node before .next for example previous.next and we point it to the node after the one to delete. So basically previous.next = current.next; because ofc current.next
+   points to the next node. So we have these 2 pointers. We traverse the list with them comparing the nodes with our one to find and delete.
+   For the 5 conditions: if we have an empty list we wont find the node ofc, so we just return null. To see if the list is empty we can check if the currentSize is 0, or if head/tail
+   are equals to null.
+   If we have a single element list so when head and tail are equal, if the only one node is the one to remove we use the removeFirst(); method because it just works we already test it.
+   If we work at the beginning of the list we use again removeFirst(); if the first node is the one to remove, this case Current points to head and previous is null.
+   If we work at the ending of the list so current points to tail, we just use removeLast(); if the node to remove is the last node.
+   If we work in the middle somewhere of the list, we have the two pointers, current = head, previous = null at first. To traverse the list we set previous = current and current = current.next.
+   as many times till we find the node we want to remove. To check the last element we have to continue till current = null otherwise we will stop just before the last element.
+   Pay attention that remove first and remove last has the same return data type of the whole find and remove method.
+   Also remember here we check in the while until current != null in the removeLast we check until current.next!= null. In this case we dont skip to check the last node.
+   Be careful to return current.data not the E obj passed as parameter because the first may contain more information than the E obj.
+
+   CONTAINS
+
+   We just need to use the compareTo method.
+
+   PEEK FIRST
+
+   Complexity 0(n)
+
+   PEEK LAST
+
+   Complexity O(1)
+
+
+   TESTING THE LINKED LIST
+
+   Separated class as tester with a main method
+
+   ITERATOR & ITERABLE
+
+   In java 1,8 interfaces can provide default implementations of the methods except hashcode equals and toString because they are in Object

@@ -1,10 +1,48 @@
 package com.ghevi.ads.linkedlists;
 
+import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 // Notes at Notes/Singly LinkedList.txt
 
-public class SinglyLinkedList<E> implements ListIterator<E> {
+public class LinkedList<E> implements ListIterator<E> {
+
+    class IteratorHelper implements Iterator<E>{
+
+        Node<E> index;
+
+        public IteratorHelper(){
+            index = head;
+        }
+
+        // Return true if there is an element to return at the pointer
+        @Override
+        public boolean hasNext() {
+            return (index != null);
+        }
+
+        // Return the element where the pointer is and mover the pointer to the next element
+        @Override
+        public E next() {
+            if(!hasNext())
+                throw new NoSuchElementException();
+
+            E val = index.data;
+            index = index.next;
+
+            return val;
+        }
+
+        /* For version older than java 1.8
+        public void remove(){
+            throw new UnsupportedOperationException();
+        }
+
+        public void forEachRemaining(){};
+        */
+
+    } // inner class (can only be accessed by the outer class)
 
     class Node<E> {
 
@@ -21,7 +59,7 @@ public class SinglyLinkedList<E> implements ListIterator<E> {
     private Node<E> tail;
     private int currentSize;
 
-    public SinglyLinkedList(){
+    public LinkedList(){
         head = null;
         tail = null;
         currentSize = 0;
@@ -130,6 +168,62 @@ public class SinglyLinkedList<E> implements ListIterator<E> {
 
         return current.data;
     }
+
+    public E findAndRemove(E obj){
+        Node<E> current = head, previous = null;
+
+        // In an empty list current = null so we skip to the last line
+        while(current != null){
+            if(((Comparable<E>)obj).compareTo(current.data) == 0){
+
+                // Beginning or single element
+                if(current == head)
+                    return removeFirst();
+
+                // Ending of the list
+                if(current == tail)
+                    return removeLast();
+
+                currentSize--;
+
+                // Removing the reference to the node to delete
+                previous.next = current.next;
+
+                return current.data;
+            }
+            previous = current;
+            current = current.next;
+        }
+        // Node not found
+        return null;
+    }
+
+    public boolean contains(E obj){
+        Node<E> current = head;
+
+        while(current != null) {
+            if(((Comparable<E>) obj).compareTo(current.data) == 0)
+                return true;
+
+            current = current.next;
+        }
+        return false;
+    }
+
+    public E peekFirst(){
+        if(head == null)
+            return null;
+
+        return head.data;
+    }
+
+    public E peekLast(){
+        if(tail == null)
+            return null;
+
+        return tail.data;
+    }
+
 
     // Interface methods
 
