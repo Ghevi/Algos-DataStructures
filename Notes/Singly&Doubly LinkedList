@@ -1,3 +1,7 @@
+ ***********************************
+ SINGLY LINKED LIST
+ ***********************************
+
  Complexity of counting the size of the list would be: θ(n) aka Theta of n because we have to count exactly n elements.
    So we get to know the currentSize. But if we keep track of the currentSize,
    then the complexity to know the size get reduced to O(1) aka constant time,
@@ -13,6 +17,7 @@
 
    SUPER IMPORTANT::: while(tmp.next != null) -> stop at last node (peek Last)
                       while(tmp != null) -> stop after the last node  (contains, find and remove)
+                      tail is required for having O(1) for adding and removing
 
    ADDING FIRST
    head is null when the linked list is empty. In order to add a node, we have to assign the memory address
@@ -67,6 +72,7 @@
    To tell if we are at the end of the list we while current != tail or current.next == null. At the end of the list current == tail and current.next == tail
    So we set previous = current and current = current.next;
    Then we point previous.next = null; because is the new tail, tail = previous, we decrease current size and we return current.data;
+   Always 0(n) even with the tail because we have no way to go to the node before the last.
 
    FIND AND REMOVE
 
@@ -104,3 +110,72 @@
    ITERATOR & ITERABLE
 
    In java 1,8 interfaces can provide default implementations of the methods except hashcode equals and toString because they are in Object
+
+
+ ***********************************
+ DOUBLY LINKED LIST
+ ***********************************
+
+ We have head which points to the first node A. A has next, previous and data. A.next points to B, A.previous is null because A is the first element.
+ B.next points to C and B.previous points to A node
+ Tail is the last node C and it is required for having constant time adding and remove.
+ E tmp = tail.data stores the data in the last node.
+ Traversing the doubly linked list is not O(n) like the singly list, because Node<E> beforeLast = tail.previous; (beforeLast is the node before the last one)
+ tail.previous.next = null will delete the last not, it basically points at it self. If C is the tail, tail is the tail, tail.previous is the node B, tail.previous.next is C or the tail again.
+ When i say a variable is the node in reality is just a pointer to that node it contains the memory address but it can help to think about it as the node itself.
+ tail = tail.previous will make tail pointing or be the B node, so B is the new tail.
+ We return tmp which contains the removed node data. Even if the removed node gets garbage collected we still have save his data and we can return it.
+ This is a constant time O(1) removeLast.
+
+ The addFirst in this tipe of list has the disadvantage to require an extra step to add a new node at the beginning.
+ create the new node
+ set new node.next = head
+ set head.previous = new node (this is the extra step)
+ set head = new node
+
+ To add something in the middle for example between A and B (current is B, previous is A):
+ new node
+ new node.previous = current.previous (current.previous = A)
+ current.previous.next = new node  (A.next = new node)
+ current.previous = new node (A = current.previous = new node)
+ new node.next = current (new node.next = B)
+
+ ***********************************
+ CIRCULAR LINKED LIST
+ ***********************************
+
+ Possible solutions to see if the list is circular we could:
+
+ record a data item and see if we find it again. But if we allow multiple same value items this isnt feasible
+ Start at the had, iterate until you find head again.
+ Compare memory addresses
+
+ The right way to do it is the second method. You have to create a temporary pointer tmp and iterate trough the list.
+ You iterate until tmp == null, tmp == head  or tmp.next = head
+ This is O(n)
+ If we have a tail pointer we could check if tail.next == head and this is O(1)
+
+ To check if the list isnt properly circular:
+
+ Now let's say that the last element doesnt point to the first one but some other node in the middle of the list.
+ We could see that by seeing that tail.next is not null and it doesnt point to head.
+ Without tail we need 2 temporary pointers, using one to iterate the list and then moving the other to reiterate with the first pointer again,
+ so a loop nested in a loop so this would be O(n^2). Kinda bad, use the tail.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

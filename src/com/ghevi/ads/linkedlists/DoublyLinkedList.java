@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 
 // Notes at Notes/Singly&Doubly LinkedList.txt
 
-public class LinkedList<E> implements Iterable<E> {
+public class DoublyLinkedList<E> implements Iterable<E> {
 
     @Override
     public Iterator<E> iterator() {
@@ -88,6 +88,7 @@ public class LinkedList<E> implements Iterable<E> {
 
         E data;
         Node<E> next;
+        Node<E> previous;
 
         public Node(E obj){
             data = obj;
@@ -96,11 +97,13 @@ public class LinkedList<E> implements Iterable<E> {
     } // inner class (can only be accessed by the outer class)
 
     private Node<E> head;
+    private Node<E> previous;
     private Node<E> tail;
     private int currentSize;
 
-    public LinkedList(){
+    public DoublyLinkedList(){
         head = null;
+        previous = null;
         tail = null;
         currentSize = 0;
     }
@@ -111,6 +114,7 @@ public class LinkedList<E> implements Iterable<E> {
 
         // The order of these 2 lines is fundamental
         node.next = head;
+        head.previous = node;
         head = node;
 
         currentSize++;
@@ -186,7 +190,6 @@ public class LinkedList<E> implements Iterable<E> {
         return tmp;
     }
 
-    // O(n)
     public E removeLast(){
         if(head == null){
             return null;
@@ -212,6 +215,7 @@ public class LinkedList<E> implements Iterable<E> {
         return current.data;
     }
 
+    // TO DO
     public E findAndRemove(E obj){
         Node<E> current = head, previous = null;
 
@@ -239,6 +243,11 @@ public class LinkedList<E> implements Iterable<E> {
         }
         // Node not found
         return null;
+    }
+
+    // TO DO
+    public void insert(E obj){
+
     }
 
     public boolean contains(E obj){
