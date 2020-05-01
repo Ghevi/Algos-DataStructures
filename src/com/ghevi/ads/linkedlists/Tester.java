@@ -6,7 +6,7 @@ public class Tester {
 
     public static void main(String[] args) {
 
-        ListIterator<Integer> list = new LinkedList<Integer>();
+        LinkedList<Integer> list = new LinkedList<Integer>();
         int n = 10;
 
         for (int i = 0; i < n; i++)
@@ -21,3 +21,4 @@ public class Tester {
         }
     }
 }
+

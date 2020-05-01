@@ -6,9 +6,14 @@ import java.util.NoSuchElementException;
 
 // Notes at Notes/Singly LinkedList.txt
 
-public class LinkedList<E> implements ListIterator<E> {
+public class LinkedList<E> implements Iterable<E> {
 
-    class IteratorHelper implements Iterator<E>{
+    @Override
+    public Iterator<E> iterator() {
+        return new IteratorHelper();
+    }
+
+    class IteratorHelper implements ListIterator<E>{
 
         Node<E> index;
 
@@ -22,7 +27,7 @@ public class LinkedList<E> implements ListIterator<E> {
             return (index != null);
         }
 
-        // Return the element where the pointer is and mover the pointer to the next element
+        // Return the element where the pointer is and move the pointer to the next element
         @Override
         public E next() {
             if(!hasNext())
@@ -32,6 +37,41 @@ public class LinkedList<E> implements ListIterator<E> {
             index = index.next;
 
             return val;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return false;
+        }
+
+        @Override
+        public E previous() {
+            return null;
+        }
+
+        @Override
+        public int nextIndex() {
+            return 0;
+        }
+
+        @Override
+        public int previousIndex() {
+            return 0;
+        }
+
+        @Override
+        public void remove() {
+
+        }
+
+        @Override
+        public void set(E e) {
+
+        }
+
+        @Override
+        public void add(E e) {
+
         }
 
         /* For version older than java 1.8
@@ -65,6 +105,7 @@ public class LinkedList<E> implements ListIterator<E> {
         currentSize = 0;
     }
 
+    // O(1)
     public void addFirst(E obj){
         Node<E> node = new Node<E>(obj);
 
@@ -75,6 +116,7 @@ public class LinkedList<E> implements ListIterator<E> {
         currentSize++;
     }
 
+    // O(1)
     public void addFirstWithTail(E obj){
         Node<E> node = new Node<E>(obj);
 
@@ -227,50 +269,7 @@ public class LinkedList<E> implements ListIterator<E> {
 
     // Interface methods
 
-    @Override
-    public boolean hasNext() {
-        return false;
-    }
 
-    @Override
-    public E next() {
-        return null;
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return false;
-    }
-
-    @Override
-    public E previous() {
-        return null;
-    }
-
-    @Override
-    public int nextIndex() {
-        return 0;
-    }
-
-    @Override
-    public int previousIndex() {
-        return 0;
-    }
-
-    @Override
-    public void remove() {
-
-    }
-
-    @Override
-    public void set(E e) {
-
-    }
-
-    @Override
-    public void add(E e) {
-
-    }
 
 }
 
