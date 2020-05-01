@@ -1,0 +1,9 @@
+                    Pro                                     Cons
+
+Array              faster                                fixed size
+                   less memory            when adding size, rapid growth is expensive
+                                          so it could become slower then linkedlist
+
+
+LinkedList       Unlimited Capacity                        slower
+                                                         extra memory

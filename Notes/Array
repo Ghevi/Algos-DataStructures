@@ -1,0 +1,47 @@
+*****************
+ARRAY
+*****************
+
+Ordered array:
+
+addLast is O(1) knowing the size of the array, we can just add the element at the end, so constant time
+removeLast is O(1) for the same reason
+
+addFirst is O(n) because the only way to do it is shifting right every element by one position and then adding the element
+removeFirst is O(n) for the same reason but this time after removing the element, the others must be shifted left
+
+Unordered array:
+
+If i dont care about the order of the elements, maybe im using the array just for storage, in order to addFirst i just need
+to take the first element and move it to the end and adding the new element at the beginning. So O(1).
+Same for removingFirst.
+
+So for stacks and queues we ofc care about the order of the elements! This makes the unordered array shortcut not usable.
+We would need to use the ordered array way but as we saw two operations have O(n):
+For a queue we could use addLast O(1) and removeFirst O(n) and this is bad.
+So if we do addFirst O(n) and removeLast O(1). Crap! We still have a slow complexity.
+
+**********************************************************************************
+* Conclusion: we cant implement a stack or a queue with a standard ordered array *
+**********************************************************************************
+
+To solve this problem python and perl uses a special array with head pointer at the middle of the array.
+If the array is empty head is also tail.
+
+Circular arrays:
+
+addLast
+
+While adding elements the tail pointer is moved to point right.
+If the tail goes over bound (tail > array.size) then the next element will be added at the first position of the array starting from the left.
+So this left position is the new tail.
+
+addFirst
+
+They do the same with moving head to the right and when head is at position 0 this is the new end and next element will be added to the tail
+which is pointing at the last position of the array, but this is the new beginning.
+Basically beginning and ending of the array can be at far left or far right based if we are adding or removing.
+
+These arrays are called circular Arrays. When the array is full or empty, tail and head are pointing at the same position.
+They guarantee constant time adding and removing to arrays.
+
