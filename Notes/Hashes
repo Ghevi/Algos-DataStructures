@@ -1,0 +1,119 @@
+*******************
+HASHES
+*******************
+
+The problem with link list is that methods who require to traverse it all the way trough is O(n) as time complexity
+Hashes are more efficient in this regard
+Basically from now on, the last two groups of methods will be the same for others data structures.
+What we are gonna focus is to improve the complexity of the first group.
+This idea start as associative arrays (keys->values)
+
+We have two arrays, in the first we put student id and the second the grade
+
+key -> value:
+
+cssc10 -> 92%
+cssc11 -> 11%
+
+So in order to find a grade given an id, we just need to do this hash function
+
+hashCode(String id)
+    remove cssc
+    convert to int (using like integer.parseInt)
+    int - 10
+    return int
+
+Then find the id which has complexity O(1) and get the value out.
+The remove a grade we find the key and set the value to for example -1
+Hash functions can be written in many ways
+
+Hash functions are property of the data. So they have to be written based on the data.
+They have to be fast to compute. For a million items, it must be like few cycle not 1 second.
+If two elements are equal, whatever equal might means in a specific case, it should return the same value
+Should always return the same value during one run of the code using the same key
+(Opinable) is possible to return different values for a key in separate runs, but we usually do serialization so we
+do the data structure and write it to disk, doesnt need to have multiple runs with different results.
+The last point is important tho because the object class have a few methods to override like the toString, equals and hashCode
+The hashCode must be overrided for our specific case. The default one use the memory location so this is why the needs for the last consideration.
+If you dont override the hashCode you get different values because the object get put in different locations
+
+Lastly it has to minimize collisions:
+
+Collisions in a hash happens when my hashcode function for different entries gives me the same value. Remember the example where
+two phone numbers as keys gets hash coded by summing their 3 parts but their sum ends up being equal?
+So in that case two keys gives point to the same value, for example the same person.
+These collision should be minimized
+
+Btw breaking a long numbers in parts and summing them is called Folding, we can do the same for IDs.
+Also remember that phone numbers for example are not totally random, for example the first part of the number.
+So the distribution of our keys in the array wont be random. To distribute these keys to avoid collision we have to think a way to do it
+
+So one way is that if we have the word t h i s
+t -> 116 * g^0 +
+h -> 104 * g^1 +
+i -> 105 * g^2 +
+s -> 115 * g^3 =
+sum = ...
+g is 31 because https://stackoverflow.com/questions/299304/why-does-javas-hashcode-in-string-use-31-as-a-multiplier
+
+COMPRESSING HASHCODE
+
+To optimize the returned int to reduce collisions we use an odd sized table and a table with a size of a prime number
+If the returned int is negative number because java allows it (ex: -10 % 3 = -1) we have to convert it to positive with module |-1| = 1
+
+8-bit twos complement (complemento a due)
+
+0 0 0 0 0 0 0 0 = 0
+0 0 0 0 0 0 0 1 = 1
+0 0 0 0 0 0 1 0 = 2
+0 1 1 1 1 1 1 0 = 126
+0 1 1 1 1 1 1 1 = 127 <- largest number u can store as an int in a byte
+1 1 1 1 1 1 1 1 = -1
+1 1 1 1 1 1 1 0 = -2
+1 0 0 0 0 0 0 1 = -127
+1 0 0 0 0 0 0 0 = -128
+
+In java the first bit indicate the sign (0 +) (1 -)
+
+So in our function to make the module we can change the first bit of our number if it is a 1 to 0 and if it is 0 we ofc leave as that.
+To do that we take data.hashCode() & 07xFFFFFFF; where 7 is 0111 and then seven F each is 1111 in hexadecimal
+So all the F in hex are gonna be 0111 to convert the negative sign to positive.
+
+-1 & 07xFFFFFFF -> 2147483647
+-10 & 07xFFFFFFF -> 2147483638
+
+It doesnt matter what number we get, it's modelled based on hexadecimals.
+
+To fit in our hash array we are gonna do int hashVal = data.hashCode(s) and hashVal = hashVal & 0x7FFFFFFF
+then hashVal = hashVal % tableSize
+
+LOAD FACTOR
+
+How much data we have on our table, as we put data in our array we need to know how full is the array relative to
+how large it is. The load factor is represented as λ = number of entries / total size of the array
+if(λ = 0) the data structure is empty
+if(λ = 0.5) half full
+if(λ = 1) full
+
+In the case of array when load factor is 0.6 0.7 is time to consider increasing the size of the array
+We can arrive to lambda above 1 with some methods.
+
+O(?) {
+Add
+Remove
+Lookup/Find O(1)
+Change
+}
+
+Ө(n) {
+All entries
+All Keys
+All Values
+}
+
+O(1) {
+Size
+isEmpty
+isFull
+loadFactor
+}
