@@ -2,6 +2,33 @@
 HASHES
 *******************
 
+Until now we are at this situation:
+
+O(?) {
+Add
+Remove
+Lookup/Find O(1)
+Change
+}
+
+These 2 wont change
+
+Ө(n) {
+All entries
+All Keys
+All Values
+}
+
+O(1) {
+Size
+isEmpty
+isFull
+loadFactor
+}
+
+Getting the keys and getting the values are always O(n) regardless of how we implement them.
+
+
 The problem with link list is that methods who require to traverse it all the way trough is O(n) as time complexity
 Hashes are more efficient in this regard
 Basically from now on, the last two groups of methods will be the same for others data structures.
@@ -90,7 +117,10 @@ then hashVal = hashVal % tableSize
 LOAD FACTOR
 
 How much data we have on our table, as we put data in our array we need to know how full is the array relative to
-how large it is. The load factor is represented as λ = number of entries / total size of the array
+how large it is.
+
+The load factor is represented as λ = number of entries / total size of the array for a normal array
+
 if(λ = 0) the data structure is empty
 if(λ = 0.5) half full
 if(λ = 1) full
@@ -98,22 +128,157 @@ if(λ = 1) full
 In the case of array when load factor is 0.6 0.7 is time to consider increasing the size of the array
 We can arrive to lambda above 1 with some methods.
 
-O(?) {
-Add
-Remove
-Lookup/Find O(1)
-Change
-}
+******************************************************
+* Recap:                                             *
+* int h = data.hashCode();  // return an int         *
+* h = h & 0xFFFFFFF;        // module                *
+* h = h % tableSize;        // model it on tableSize *
+******************************************************
 
-Ө(n) {
-All entries
-All Keys
-All Values
-}
+So now we have a number h for our entry data that is between the size of our table (the array) we put data
+in the appropriate cell based on his hash code.
 
-O(1) {
-Size
-isEmpty
-isFull
-loadFactor
-}
+************************
+
+RESOLVING COLLISIONS
+
+If we have another data, data1, and we do the same process and it points to the same location (collision) to avoid this we increase
+the hash value in two ways:
+
+Linear Probing:
+
+we put into the next space. But when we do this many times, to get back the value, we would have to go to data.next.next ecc ecc
+until we find the element we need.
+As our structure get filled up, we need to check more and more.
+For the remove we must set a flag in the place where we remove an element because if we just set null, our remove will stop and say
+that we didnt find the element we needed but maybe it was after an already removed one. So this is why we have to set a flag and pass after it.
+Data tends to clump together and it becomes inefficient
+
+Quadratic Probing:
+
+You start with the hash value and if a position is already filled, instead of adding 1 with linear probing, we add a quadratic.
+hash value + 1 ^ 2 and then + 2^2 then 3^2 etc. So the positioning wont be clumped at the same spot.
+We have to be careful because quadratic probing might exceed the bound of our table pretty soon, if this happen we have to get back and make sure
+it doesnt happen.
+
+***********************
+
+Double hashing
+
+We have 2 hash values. We will need 2 hashCode functions:
+
+the second must be different from the first
+the second gets called if a collision happens
+it cant return 0 because it will be summed with the first
+
+Example:
+
+data.hashCode()
+data1.hashCode()
+if it result in a collision we do data1.secondHashCode()
+then data1.hashCode() + data1.secondHashCode()
+
+So double hashing is convenient because it spread the data across the table, but the problem it must ensure we have 2 hash functions.
+Java doesnt have a way to ensure there are 2 hashCode functions. Only one because every Object has the hashCode method.
+
+****************
+
+CHAINING:
+
+So the problem is when lambda increase above 0.6. So the idea of chaining is that we have our array where keys are stored and we have all these issues till this point.
+To resolve this, for every position we associate a linkedList. Every position will have a head node.
+We take our data and do the hashcode, module, table size modelling as always. We get a place in the table to add the data. We get to that place, we have our linked list
+head node and we call linkedList.addFirst(data); O(1)
+
+(Let's call the data as letter)
+
+h = a.hashCode()
+h = h & 0xFFFFFFF
+h = h % tableSize
+linkedList.addFirst(a);
+
+h = b.hashCode()
+h = h & 0xFFFFFFF
+h = h % tableSize
+linkedList.addFirst(b);
+
+Here's a representation of what's going on:
+ _   _   _   _   _
+|_| |_| |_| |_| |_|  <-- this is the table/array
+ |   |   |   |   |
+ O   O   O   O   O   <-- these are the head nodes
+ a       b   c   f   <-- a is placed there with addFirst
+ d       e   i
+ g       h           So as you can see the structures keeps growing but vertically using linked lists for each position
+
+ We ends up having :
+
+ Constant time complexity or O(1) for {
+ Add()
+ Remove()
+ Lookup/Find()
+ * And unlimited size ( limited with the memory of the pc ofc )*
+ * Doesnt need frequent resize *
+ }
+
+ For our chained hash the load factor is λ = num entries / num of possible chains
+ As we add things and the structure grows, it can be 1 or even above 2 3 or 10 or higher.
+
+ OMFG THIS IS THE BEST DATA STRUCTURE EVER INVENTED, YOU SHOULD USE IT ALL THE T-
+
+ !!!OBJECTION!!!
+
+ Chain hashing can go horribly wrong. Elements could be add vertically to the same linked list / position over and over again.
+ So the hash basically become converted to a normal linked list with its time complexity of its methods. O(1) -> O(n).
+
+ So the worst case for chaining is O(n) if our hashcode return the same number every time.
+ The best case is if our hashcode return a different number every time so O(1)
+
+ Conclusion, it is a robust way to construct our structures, many libraries are made with this in java, python etc.
+
+ **************
+
+ REHASHING
+
+ Cant just copy over!
+
+ When the data structure gets filled up, for example using the hash chaining, we dont want λ to become too much higher
+ because at that point we will basically going trough very large linked lists.
+ If we have instead a normal array we have to make a new array twice the size, so we can copy over all the elements of the first one
+ and we also have more space.
+ With chaining we have to do something similar. We make an array twice the size. But we cant just copy the structure over because
+ remember that above in our rule square where we do hashcode and 0x7FFFFFfFF and THEN h % tableSize, at this point we need to
+ do h % newTableSize --> this new table/array has double the size of the original, we will get back a completely different hashvalue than the original!
+ We wont be able to find our elements anymore. It wont work.
+
+ So the only way to do it, we have to initiate our table full of empty linked list, we take the first data a, we do the 3 things to get back a hash value and
+ we put the object a in some place. We do the same for all the other data of the original structure.
+ They will have a completely new position.
+
+ NOW TO THE CODE FINALLY!
+
+ The chained hashes will consist of an array, linked lists chained to each position of the array and in the linked lists
+ we will put a hash element. The hash element is an inner class that contains the keys and the values. These keys and value
+ will be modelled on generics <K, V>. You can use others letters and even put more then 2, these will all be java generics, the
+ thing that matters is being consistent when you refer them in the code so you dont mess them up together.
+
+ By being an inner class the hashElement doesnt need to override equals, hashcode and toString method because it will be only used
+ in our data structure definition.
+
+ MIN MAX:
+
+ In the java API the default tableSize is 16 and the default maxLoadFactor is 0.75 (is a good general load factor if we dont know the use case of the hash structure)
+ It resize after 12 elements added because 12/16 = 0.75
+ Basically by min maxing the table size and the max load factory you can change how much the data structure will be filled up before resizing
+ The higher the max loadFactory the less table size you can set and viceversa. A lower max load factor means that we will have a more frequent resize.
+
+
+
+
+
+
+
+
+
+
+

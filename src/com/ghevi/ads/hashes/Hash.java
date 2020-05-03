@@ -1,32 +1,54 @@
 package com.ghevi.ads.hashes;
 
-public class Hash {
+import com.ghevi.ads.linkedlists.LinkedList;
 
-    public static void main(String[] args) {
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
 
-        String s = "my name is Josh";
+public class Hash<K, V> {
 
-        char c = s.charAt(6); // e
+    class HashElement<K, V> implements Comparable<HashElement<K, V>> {
 
-        int i = s.charAt(6); // unicode value 101
+        K key;
+        V value;
 
-        System.out.println(i);
-
-        // ----
-
-        int hashVal = hashCode(s);
-    }
-
-    public static int hashCode(String s){
-        int g = 31; //
-        int hash = 0;
-
-        // permutation
-        for(int i = 0; i < s.length(); i++){
-            hash = g * hash + s.charAt(i);
+        public HashElement(K key, V value){
+            this.key = key;
+            this.value = value;
         }
 
-        return hash;
-    }
+        // As said in the notes, what being the same means is something
+        // we get to decide, for example the two compared elements must
+        // have their keys or values the same.
+        // In this example the keys must be the same
+        @Override
+        public int compareTo(HashElement<K, V> o) { // o = other
+            return (((Comparable<K>)o.key).compareTo(this.key)); // The cast ensure that if someone wants to add a key
+                                                                 // to our hash, their key has to have a compareTo method.
+        }
+    } // inner class, the data
 
+    int numElements; // current size
+    int tableSize; // size of the array
+
+    double maxLoadFactor; // the point where to resize
+
+    LinkedList<HashElement<K, V>> [] hashArray; // the array with generics elements
+
+    // How to create a generic array
+    // k[] keys = (K[]) new Object[10];
+
+    public Hash(int tableSize){
+        this.tableSize = tableSize;
+        hashArray = (LinkedList<HashElement<K, V>> []) new LinkedList[tableSize];
+
+        // Initialize every position in the array with an empty linked list
+        for(int i = 0; i < tableSize; i++){
+            hashArray[i] = new LinkedList<HashElement<K, V>>();
+        }
+
+        maxLoadFactor = 0.75;
+        numElements = 0;
+    }
 }
