@@ -272,7 +272,21 @@ Here's a representation of what's going on:
  Basically by min maxing the table size and the max load factory you can change how much the data structure will be filled up before resizing
  The higher the max loadFactory the less table size you can set and viceversa. A lower max load factor means that we will have a more frequent resize.
 
+ ADD
 
+ resizing
+ create object/element
+ get the index/hashcode
+ add to the linked list
+ increase number of elements by 1
+
+ REMOVE
+
+ get the index/hashcode
+ call hashArray[calculateHashIndex(key)].remove(hashElements)
+ decrease by one the number of elements
+
+ NOTE: getting the index in my hash class is encapsulated in a method
 
 
 
